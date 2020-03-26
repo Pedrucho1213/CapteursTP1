@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView img;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //nous initialisons les variables et les capteurs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         capteurs = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(acel == null)
             finish();
-        boolean flash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        boolean flash = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);// Si le capteur existe on obtiens true et si non false
         CapteursList();
         DispoCapteurs();
     }
@@ -71,8 +72,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         capteurs.registerListener(mSensorEvent, acel, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+// nous initialisons la méthode d'écoute des capteurs
     final SensorEventListener mSensorEvent = new SensorEventListener() {
         @Override
+        //S'il y a des changements dans le capteur, ce bloc de code est exécuté
         public void onSensorChanged(SensorEvent event) {
 
             if (event.values[0] < proxi.getMaximumRange()){
@@ -135,17 +139,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     public void CapteursList () {
-        Listcapteurs = new ArrayList<String>();
-        List <Sensor> listCapteurs = capteurs.getSensorList(Sensor.TYPE_ALL);
-        for(Sensor sensor: listCapteurs) {
-            Listcapteurs.add(sensor.getName());
+        Listcapteurs = new ArrayList<String>(); // on crée une ArrayList
+        List <Sensor> listCapteurs = capteurs.getSensorList(Sensor.TYPE_ALL); // on obtiens toutes sortes de capteurs sur l'appareil dans une List
+        for(Sensor sensor: listCapteurs) { // On parcoure la List
+            Listcapteurs.add(sensor.getName()); // on mets les valeurs dans une arrayList
         }
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Listcapteurs);
-        lista.setAdapter(adapter);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Listcapteurs); // On creer une adapter avec notre list
+        lista.setAdapter(adapter); // On passe les donnes à notre List View
     }
     public void DispoCapteurs() {
         listeDispo = new ArrayList<String>();
-        if(capteurs.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+        if(capteurs.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) { //on obtiens un objet qui corresponds au controlateur de ce capteur
             listeDispo.add("le capteur accelerometer existe");
         }else {
             listeDispo.add("le capteur accelerometer n'existe pas");
@@ -160,6 +164,10 @@ public class MainActivity extends AppCompatActivity {
         }else {
             listeDispo.add("le capteur GRAVITY n'existe pas");
         }
+        /*
+        on cree un adapter pour convertir
+        le Array List et après l'ajouter dans le ListView
+        */
         adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, listeDispo);
         dispo.setAdapter(adapter2);
     }
